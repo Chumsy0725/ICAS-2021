@@ -39,7 +39,7 @@ def main():
                                        fill_mode='nearest',
                                        preprocessing_function=normalize)
 
-    train_generator = train_datagen.flow_from_directory("data/test",
+    train_generator = train_datagen.flow_from_directory("data/train",
                                                         target_size=(128, 128),
                                                         batch_size=1,
                                                         color_mode='grayscale',
