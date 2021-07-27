@@ -1,3 +1,4 @@
+import os
 import models
 from utils import normalize
 import tensorflow as tf
@@ -27,9 +28,6 @@ def main():
     rms = tf.keras.optimizers.Adam(lr=0.001)
     model.compile(optimizer=rms, loss=tf.keras.losses.Huber(delta=1.0))
 
-    EPOCHS = 10
-    BATCH_SIZE = 1
-
     train_datagen = ImageDataGenerator(rotation_range=0,
                                        width_shift_range=0,
                                        height_shift_range=0,
@@ -42,7 +40,7 @@ def main():
 
     train_generator = train_datagen.flow_from_directory("data/test",
                                                         target_size=(128, 128),
-                                                        batch_size=BATCH_SIZE,
+                                                        batch_size=1,
                                                         color_mode='grayscale',
                                                         class_mode="input")
 
@@ -55,8 +53,16 @@ def main():
                                                                   class_mode="input")
 
     model.fit(train_generator,
-              epochs=EPOCHS,
+              epochs=10,
               validation_data=validation_generator)
+
+    path = os.path.join("AE_weights")
+    if not os.path.exists(path):
+        os.mkdir(path)
+
+    encoder.save_weights("AE_weights/encoder.h5")
+    decoder.save_weights("AE_weights/decoder.h5")
+    print("Saved model to disk")
 
 
 if __name__ == '__main__':
