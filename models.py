@@ -1,6 +1,5 @@
 from tensorflow.keras import layers
-from tensorflow.keras.models import Model
-from keras.models import Sequential
+from tensorflow.keras.models import Model, Sequential
 
 
 def Encoder_Gene():
@@ -81,34 +80,29 @@ def Decoder_Gene():
 
 
 def Time_dis_ENC(encoder):
-    modelpre = Sequential()
-    modelpre.add(layers.TimeDistributed(encoder, input_shape=(3, 128, 128, 1)))
-    modelpre.add(layers.TimeDistributed(Flatten(), input_shape=(3, 1024)))
-    return modelpre
+    model = Sequential()
+    model.add(layers.TimeDistributed(encoder, input_shape=(3, 128, 128, 1)))
+    model.add(layers.TimeDistributed(layers.Flatten(), input_shape=(3, 1024)))
+    return model
 
 
 def Middle():
     encoder_inputs = layers.Input(shape=(3, 1024), name="Encodings_of_images_sequence")
-    encoder = layers.LSTM(
-        1024, input_shape=(3, 1024), return_state=True, name="Seq2Seq_encoder"
-    )
+    encoder = layers.LSTM(1024, input_shape=(3, 1024), return_state=True, name="Seq2Seq_encoder")
     encoder_outputs, state_h, state_c = encoder(encoder_inputs)
     encoder_states = [state_h, state_c]
 
     decoder_inputs = layers.Input((1, 1024), name="Fixed_zero_tensor")
-    decoder_lstm = layers.LSTM(
-        1024, return_sequences=True, return_state=False, name="Seq2Seq_decoder"
-    )
+    decoder_lstm = layers.LSTM(1024, return_sequences=True, return_state=False, name="Seq2Seq_decoder")
     decoder_outputs = decoder_lstm(decoder_inputs, initial_state=encoder_states)
 
-    modelmid = Model([encoder_inputs, decoder_inputs], decoder_outputs)
-    return modelmid
+    model = Model([encoder_inputs, decoder_inputs], decoder_outputs)
+    return model
 
 
 def Generator(modelpre, modelmid, decoder):
     inp1 = layers.Input((3, 128, 128, 1), name="Normal_Image_Sequence")
     inp2 = layers.Input((1, 1024), name="Zero_Fixed_Tensor")
-
     x = modelpre(inp1)
     x = modelmid([x, inp2])
     x = layers.Reshape((4, 4, 64), name="Reshaping_layer")(x)
@@ -121,50 +115,32 @@ def Generator(modelpre, modelmid, decoder):
 def Discriminator():
     def DisEncoder():
         inp1 = layers.Input((128, 128, 1))
-
         x = layers.Conv2D(16, (3, 3), padding="same")(inp1)
         x = layers.LeakyReLU(alpha=0.2)(x)
         x = layers.MaxPooling2D(pool_size=(2, 2), padding="same")(x)
-
         x = layers.Conv2D(32, (3, 3), padding="same")(x)
         x = layers.LeakyReLU(alpha=0.2)(x)
         x = layers.MaxPooling2D(pool_size=(2, 2), padding="same")(x)
-
         x = layers.MaxPooling2D(pool_size=(2, 2), padding="same")(x)
-
         x = layers.Conv2D(64, (3, 3), padding="same")(x)
         x = layers.LeakyReLU(alpha=0.2)(x)
         x = layers.MaxPooling2D(pool_size=(2, 2), padding="same")(x)
-
         x = layers.MaxPooling2D(pool_size=(2, 2), padding="same")(x)
 
-        encoder = Model(inputs=inp1, outputs=x)
-        return encoder
+        encoder_dis = Model(inputs=inp1, outputs=x, name="Discriminator_Encoder")
+        return encoder_dis
 
     encoder = DisEncoder()
-    encoder.name = "Discriminator_Encoder"
 
     model = Sequential()
-    model.add(
-        layers.TimeDistributed(
-            encoder, input_shape=(4, 128, 128, 1), name="Time_distributed_01"
-        )
-    )
-    model.add(
-        layers.TimeDistributed(
-            Flatten(name="Flatten"), input_shape=(4, 1024), name="Time_distributed_02"
-        )
-    )
-    model.add(
-        layers.SimpleRNN(
-            128,
-            input_shape=(4, 1024),
-            return_sequences=False,
-            activation="relu",
-            name="RNN_layer",
-        )
-    )
-    model.add(Dense(2, activation="softmax", name="Categorical_output"))
+    model.add(layers.TimeDistributed(encoder, input_shape=(4, 128, 128, 1), name="Time_distributed_01"))
+    model.add(layers.TimeDistributed(layers.Flatten(name="Flatten"), input_shape=(4, 1024), name="Time_distributed_02"))
+    model.add(layers.SimpleRNN(128,
+                               input_shape=(4, 1024),
+                               return_sequences=False,
+                               activation="relu",
+                               name="RNN_layer"))
+    model.add(layers.Dense(2, activation="softmax", name="Categorical_output"))
 
     return model
 
@@ -174,7 +150,7 @@ if __name__ == "__main__":
     Model_en.summary()
     Model_de = Decoder_Gene()
     Model_de.summary()
-    Model_en = Middle()
-    Model_en.summary()
-    Model_en = Discriminator()
-    Model_en.summary()
+    Model_mid = Middle()
+    Model_mid.summary()
+    Model_dis = Discriminator()
+    Model_dis.summary()
