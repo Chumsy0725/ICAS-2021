@@ -1,4 +1,5 @@
 import os
+import datetime
 import models
 from utils import normalize
 import tensorflow as tf
@@ -52,9 +53,13 @@ def main():
                                                                   color_mode='grayscale',
                                                                   class_mode="input")
 
+    log_dir="AE_logs\\fit\\" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+
     model.fit(train_generator,
               epochs=10,
-              validation_data=validation_generator)
+              validation_data=validation_generator,
+              callbacks=[tensorboard_callback])
 
     path = os.path.join("AE_weights")
     if not os.path.exists(path):
