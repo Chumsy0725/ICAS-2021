@@ -27,7 +27,7 @@ def main():
     model = Model(inputs=ultra, outputs=out, name='ConvAE')
 
     rms = tf.keras.optimizers.Adam(lr=0.001)
-    model.compile(optimizer=rms, loss=tf.keras.losses.Huber(delta=1.0))
+    model.compile(optimizer=rms, loss=tf.keras.losses.Huber(delta=1.0), metrics=['mse'])
 
     train_datagen = ImageDataGenerator(rotation_range=0,
                                        width_shift_range=0,
@@ -53,7 +53,7 @@ def main():
                                                                   color_mode='grayscale',
                                                                   class_mode="input")
 
-    log_dir="AE_logs\\fit\\" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    log_dir = "AE_logs\\fit\\" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
     model.fit(train_generator,
