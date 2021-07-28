@@ -144,6 +144,23 @@ def Discriminator():
 
     return model
 
+def DCGAN(g_model, d_model):
+
+    in_src = layers.Input(shape=(3, 128, 128, 1), name="Normal_Image_Sequence")
+    in_src_decoder = layers.Input(shape=(1, 1024), name="Fixed_Zero_Tensor")
+    gen_out = g_model([in_src, in_src_decoder])
+
+    in_target1 = layers.Reshape(
+        (1, 128, 128, 1), name="reshaping_layer")(gen_out)
+    merged = layers.Concatenate(
+        axis=1, name="joining_layer")([in_src, in_target1])
+
+    dis_out = d_model(merged)
+
+    model = Model([in_src, in_src_decoder], [gen_out, dis_out])
+
+    return model
+
 
 if __name__ == "__main__":
     Model_en = Encoder_Gene()
