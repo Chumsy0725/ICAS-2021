@@ -1,10 +1,12 @@
 import os
+import numpy as np
 from keras.preprocessing.image import (
     ImageDataGenerator,
     array_to_img,
     img_to_array,
     load_img,
 )
+
 
 def normalize(image):
     """
@@ -27,8 +29,9 @@ def lr_schedule(epoch):
     return learning_rate
 
 
-def Preprocessor(path0, slen=3, cap="", flip=False):
+def Preprocessor(path0, slen=3, cap="\\", flip=False):
     folder = [path0]
+    print('folder=', folder)
     train_files = [f for f in os.listdir(
         folder[0]) if os.path.isfile(os.path.join(folder[0], f))]
     print("Files in train_files: %d" % len(train_files))
@@ -55,7 +58,10 @@ def Preprocessor(path0, slen=3, cap="", flip=False):
     for num in range(1, len(train_files)):
 
         try:
-            img = load_img(folder[0] + cap + str(num)+'.tif', grayscale=True,
+            nums = str(num)
+            img_path = folder[0] + cap + str(nums.zfill(5))+'.jpeg'
+            #print('img_path:', img_path)
+            img = load_img(img_path, grayscale=True,
                            target_size=(128, 128), interpolation="hamming")
             if flip:
                 img = img.transpose(PIL.Image.FLIP_LEFT_RIGHT)
@@ -77,7 +83,6 @@ def Preprocessor(path0, slen=3, cap="", flip=False):
     dataset_x = dataset_x[:-1]
     dataset_y = dataset_y[1:]
     return dataset_x[:len(train_files)-slen-1], dataset_y[:len(train_files)-slen-1]
-
 
 
 def get_disc_batch(x_batch, y_batch, generator_model, batch_counter, AE, state=False):
