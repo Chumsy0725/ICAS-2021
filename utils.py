@@ -1,12 +1,8 @@
 import os
 import numpy as np
-from keras.preprocessing.image import (
-    ImageDataGenerator,
-    array_to_img,
-    img_to_array,
-    load_img,
-)
-
+from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
+import PIL
+from PIL import Image
 
 def normalize(image):
     """
@@ -68,6 +64,7 @@ def Preprocessor(path0, slen=3, cap="\\", flip=False):
 
             img.thumbnail((image_width, image_height))
             x = img_to_array(img)
+            x = (x/127.5) - 1
             x = x.reshape((128, 128, 1))
             seq.append(x)
 
