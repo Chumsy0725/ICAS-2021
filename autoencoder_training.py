@@ -1,7 +1,7 @@
 import os
 import datetime
 import models
-from utils import normalize
+from utils import normalize, lr_schedule
 import tensorflow as tf
 from tensorflow.keras.models import Model
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -41,7 +41,7 @@ def main():
 
     train_generator = train_datagen.flow_from_directory("data/train",
                                                         target_size=(128, 128),
-                                                        batch_size=1,
+                                                        batch_size=32,
                                                         color_mode='grayscale',
                                                         class_mode="input")
 
@@ -55,11 +55,12 @@ def main():
 
     log_dir = "AE_logs\\fit\\" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    lr_callback = tf.keras.callbacks.LearningRateScheduler(lr_schedule)
 
     model.fit(train_generator,
               epochs=100,
               validation_data=validation_generator,
-              callbacks=[tensorboard_callback])
+              callbacks=[tensorboard_callback, lr_callback])
 
     path = os.path.join("AE_weights")
     if not os.path.exists(path):
