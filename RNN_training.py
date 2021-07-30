@@ -1,23 +1,12 @@
-
-from numpy import loadtxt, savetxt
-import random
-import tensorflow as tf
-import numpy as np
-from tensorflow.keras import layers
-from tensorflow.keras.models import Model, Sequential
-import matplotlib.pyplot as plt
-import os
-from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 import models
 import utils
+import random
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras import layers
+from tensorflow.keras.models import Model
 
 
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-
-# The GPU id to use, usually either "0" or "1";
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
-
-# print('Number of devices: {}'.format(strategy.num_replicas_in_sync))
 
 
 def lr_schedule(epoch):
@@ -54,7 +43,7 @@ len_valid = len_test//5
 print('len valid', len_valid)
 
 numbers = np.array(random.sample(range(len_), len_))
-savetxt('numbers_44.csv', numbers, delimiter=',')
+np.savetxt('numbers_44.csv', numbers, delimiter=',')
 
 test = numbers[0:len_test]
 train = numbers[len_test:]

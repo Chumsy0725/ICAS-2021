@@ -14,18 +14,17 @@ def normalize(image):
     return image
 
 
-def lr_schedule(epoch):
+def lr_schedule(epoch, lr):
     """
     Returns a custom learning rate that decreases as epochs progress.
     """
-    learning_rate = 0.001
+
     if epoch > 30:
-        learning_rate = 0.0001
+        lr = 0.0001
     if epoch > 40:
-        learning_rate *= 0.5
+        lr *= 0.5
 
-    return learning_rate
-
+    return lr
 
 def load_image_to_array(address):
     """
