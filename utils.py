@@ -58,32 +58,22 @@ def Predict_next_image(seq, model):
     return img
 
 
-def Preprocessor(path0, slen=3, cap="\\", flip=False):
+def Preprocessor(path0, slen=3, cap="/", flip=False):
     """
-    Preprocessor for the RNN sequential data
+    Creates sequential data for RNN to train on
     """
 
     folder = [path0]
-    print('folder=', folder)
-    train_files = [f for f in os.listdir(
-        folder[0]) if os.path.isfile(os.path.join(folder[0], f))]
+    train_files = [f for f in os.listdir(folder[0]) if os.path.isfile(os.path.join(folder[0], f))]
     print("Files in train_files: %d" % len(train_files))
-
+    numer = str(1)
+    print(folder[0] + cap + str(numer.zfill(5)) + '.jpeg')
     # Original Dimensions
     image_width = 128
     image_height = 128
-    ratio = 1
 
-    image_width = 128
-    image_height = 128
-
-    channels = 1
-    nb_classes = 1
-
-    dataset_x = np.ndarray(shape=(
-        len(train_files), slen, image_height, image_width, channels), dtype=np.float32)
-    dataset_y = np.ndarray(
-        shape=(len(train_files), image_height, image_width, channels), dtype=np.float32)
+    dataset_x = np.ndarray(shape=(len(train_files), slen, 128, 128, 1),dtype=np.float32)
+    dataset_y = np.ndarray(shape=(len(train_files), 128, 128, 1),dtype=np.float32)
 
     i = 0
     seq = []
@@ -93,18 +83,20 @@ def Preprocessor(path0, slen=3, cap="\\", flip=False):
         try:
             nums = str(num)
             img_path = folder[0] + cap + str(nums.zfill(5)) + '.jpeg'
-            # print('img_path:', img_path)
-            img = load_img(img_path, grayscale=True,
-                           target_size=(128, 128), interpolation="hamming")
+            img = load_img(img_path, color_mode="grayscale", target_size=(128, 128), interpolation="hamming")
+
             if flip:
                 img = img.transpose(PIL.Image.FLIP_LEFT_RIGHT)
+            if num == 1:
+                plt.imshow(img, cmap='gray')
+                print(img_path)
+                plt.show()
 
             img.thumbnail((image_width, image_height))
             x = img_to_array(img)
             x = (x / 127.5) - 1
             x = x.reshape((128, 128, 1))
             seq.append(x)
-
             if len(seq) != slen:
                 continue
             else:
@@ -112,10 +104,12 @@ def Preprocessor(path0, slen=3, cap="\\", flip=False):
                 dataset_y[i] = x
                 i += 1
                 seq.pop(0)
+
         except OSError:
             continue
     dataset_x = dataset_x[:-1]
     dataset_y = dataset_y[1:]
+
     return dataset_x[:len(train_files) - slen - 1], dataset_y[:len(train_files) - slen - 1]
 
 
