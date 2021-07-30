@@ -144,7 +144,7 @@ lr_scheduler = tf.keras.callbacks.LearningRateScheduler(lr_schedule)
 
 
 generator.fit([train_x, np.zeros((train_x.shape[0], 1, 1024))], train_y,
-              epochs=50,
+              epochs=100,
               batch_size=5,
               shuffle=True,
               validation_data=(
