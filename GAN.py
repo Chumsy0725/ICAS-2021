@@ -79,7 +79,7 @@ def train_GAN(data, AE, args):
     RNN_middle = models.Middle()
     #RNN_middle.name = "Seq2Seq"
     RNN_middle.load_weights(
-        "/home/selfdriving/Documents/SPCup/models/tanh_seq2seq.h5")
+        "RNN_weights\tanh_seq2seq.h5")
 
     generator_model = models.Generator(enc_time, RNN_middle, dec_gen)
     #generator_model.name = "Generator"
@@ -131,8 +131,8 @@ def train_GAN(data, AE, args):
             x_batch = x_train[index: index + args.batch_size]
             y_batch = y_train[index: index + args.batch_size]
 
-            x_batch = utils.normalize(x_batch.astype(np.float32))
-            y_batch = utils.normalize(y_batch.astype(np.float32))
+            #x_batch = utils.normalize(x_batch.astype(np.float32))
+            #y_batch = utils.normalize(y_batch.astype(np.float32))
 
             # Create a batch to feed the discriminator model
             disc_input, labels = utils.get_disc_batch(
@@ -311,8 +311,13 @@ if __name__ == "__main__":
     if not os.path.exists(args.result_dir):
         os.makedirs(args.result_dir)
 
-    Dataset_X, Dataset_Y = utils.Preprocessor(
-        "/home/selfdriving/Documents/SPCup/Dataset/UCSD_Anomaly_Dataset.v1p2/UCSDped1/RNN_Train",
-        cap="/",
-    )
+    Dataset_X = []
+    Dataset_Y = []
+    paths = ['data/train/icab1/front_camera', 'data/train/icab1/back_camera',
+             'data/train/icab1/side_camera', 'data/train/icab2']
+    for path0 in paths:
+        data_x, data_y = utils.Preprocessor(path0, slen=3, cap="/", flip=False)
+        Dataset_X.extend(data_x)
+        Dataset_Y.extend(data_y)
+
     train_GAN(data=(Dataset_X, Dataset_Y), AE=AE, args=args)
