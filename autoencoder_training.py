@@ -29,19 +29,14 @@ def main():
     rms = tf.keras.optimizers.Adam(lr=0.001)
     model.compile(optimizer=rms, loss=tf.keras.losses.Huber(delta=1.0), metrics=['mse'])
 
-    train_datagen = ImageDataGenerator(rotation_range=0,
-                                       width_shift_range=0,
-                                       height_shift_range=0,
-                                       shear_range=0,
-                                       zoom_range=0,
-                                       horizontal_flip=True,
+    train_datagen = ImageDataGenerator(horizontal_flip=True,
                                        vertical_flip=False,
                                        fill_mode='nearest',
                                        preprocessing_function=normalize)
 
     train_generator = train_datagen.flow_from_directory("data/train",
                                                         target_size=(128, 128),
-                                                        batch_size=32,
+                                                        batch_size=1,
                                                         color_mode='grayscale',
                                                         class_mode="input")
 

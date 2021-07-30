@@ -144,6 +144,7 @@ def Discriminator():
 
     return model
 
+
 def DCGAN(g_model, d_model):
 
     in_src = layers.Input(shape=(3, 128, 128, 1), name="Normal_Image_Sequence")

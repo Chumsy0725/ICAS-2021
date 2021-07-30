@@ -1,6 +1,8 @@
 import os
 import numpy as np
-from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
+import matplotlib.pyplot as plt
+import tensorflow as tf
+from tensorflow.keras.preprocessing.image import  img_to_array, load_img
 import PIL
 from PIL import Image
 
@@ -24,6 +26,34 @@ def lr_schedule(epoch):
 
     return learning_rate
 
+
+def load_image_to_array(address):
+    """
+    loads an image to a numpy array given path
+    """
+    image = tf.keras.preprocessing.image.load_img(
+        address, grayscale=True, target_size=(128, 128), interpolation="hamming"
+    )
+    image = tf.keras.preprocessing.image.img_to_array(image)
+    return image
+
+
+def plot_image(image_array):
+    """
+    plots image given an array
+    """
+    plt.axis("off")
+    plt.imshow(image_array[:, :, 0], cmap="gray")
+
+
+def Predict_next_image(seq, model):
+    """
+    predict the image for the autoencoder given model and a image
+    """
+    seq = (seq / 127.5) - 1
+    img = model.predict([seq])
+    img = (1 + img[0]) / 2
+    return img
 
 def Preprocessor(path0, slen=3, cap="\\", flip=False):
     folder = [path0]
