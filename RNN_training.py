@@ -151,5 +151,5 @@ generator.fit([train_x, np.zeros((train_x.shape[0], 1, 1024))], train_y,
                   [valid_x, np.zeros((valid_x.shape[0], 1, 1024))], valid_y),
               callbacks=[lr_scheduler])
 
-modelmid.save_weights("AE_weights/tanh_seq2seq.h5")
+modelmid.save_weights("RNN_weights/tanh_seq2seq.h5")
 print('Weights Saved')
