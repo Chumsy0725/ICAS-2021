@@ -79,7 +79,7 @@ def train_GAN(data, AE, args):
     RNN_middle = models.Middle()
     #RNN_middle.name = "Seq2Seq"
     RNN_middle.load_weights(
-        "/home/selfdriving/Documents/SPCup/models/tanh_seq2seq.h5")
+        "RNN_weights\tanh_seq2seq.h5")
 
     generator_model = models.Generator(enc_time, RNN_middle, dec_gen)
     #generator_model.name = "Generator"
@@ -310,8 +310,9 @@ if __name__ == "__main__":
         os.makedirs(args.save_dir)
     if not os.path.exists(args.result_dir):
         os.makedirs(args.result_dir)
-
-    Dataset_X, Dataset_Y = utils.Preprocessor(
+        
+    
+        Dataset_X, Dataset_Y = utils.Preprocessor(
         "/home/selfdriving/Documents/SPCup/Dataset/UCSD_Anomaly_Dataset.v1p2/UCSDped1/RNN_Train",
         cap="/",
     )
