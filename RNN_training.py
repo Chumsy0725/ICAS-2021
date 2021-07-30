@@ -6,40 +6,28 @@ import tensorflow as tf
 from tensorflow.keras import layers
 from tensorflow.keras.models import Model
 
-
-
-
-def lr_schedule(epoch):
-
-    lr = 1e-3
-    if epoch > 50:
-        lr *= 0.1
-    if epoch > 80:
-        lr *= 0.1
-    print('Learning rate: ', lr)
-    return lr
-
-
 dataset_x = []
 dataset_y = []
 
-paths=['data/train/icab1/front_camera','data/train/icab1/back_camera','data/train/icab1/side_camera','data/train/icab2']
+paths = ['data/train/icab1/front_camera', 'data/train/icab1/back_camera', 'data/train/icab1/side_camera',
+         'data/train/icab2']
+
 for path0 in paths:
-    data_x,data_y = utils.Preprocessor(path0,slen=3,cap = "/",flip=False)   
+    data_x, data_y = utils.Preprocessor(path0, slen=3, cap="/", flip=False)
     dataset_x.extend(data_x)
     dataset_y.extend(data_y)
 
 dataset_x = np.array(dataset_x)
 dataset_y = np.array(dataset_y)
-#print(dataset_x )
+# print(dataset_x )
 print("Dataset X shape", dataset_x.shape)
 print("Dataset Y shape", dataset_y.shape)
 
 len_ = dataset_x.shape[0]
 print('len', len_)
-len_test = len_//5
+len_test = len_ // 5
 print('len test', len_test)
-len_valid = len_test//5
+len_valid = len_test // 5
 print('len valid', len_valid)
 
 numbers = np.array(random.sample(range(len_), len_))
@@ -69,7 +57,6 @@ print("Testing Y shape", final_test_y.shape)
 print("Validation X shape", valid_x.shape)
 print("Validation Y shape", valid_y.shape)
 
-
 #####################################################################################################################
 # ---------------------------------ENCODER----------------------------------------------------------------------------
 #####################################################################################################################
@@ -77,7 +64,6 @@ print("Validation Y shape", valid_y.shape)
 encoder = models.Encoder_Gene()
 rms = tf.keras.optimizers.Adam(lr=0.001)
 encoder.compile(optimizer=rms, loss='mse')
-
 
 # Load the pretrained encoder weights here
 encoder.load_weights("AE_weights/encoder.h5")
@@ -128,10 +114,9 @@ x = modelmid([x, inp2])
 x = layers.Reshape((4, 4, 64), name='Reshaping')(x)
 output = decoder(x)
 
-
-#modelpre.name = "Convolutional_Encoder"
-#modelmid.name = "Seq2Seq_LSTM"
-#decoder.name ="Convolutional_Decoder"
+# modelpre.name = "Convolutional_Encoder"
+# modelmid.name = "Seq2Seq_LSTM"
+# decoder.name ="Convolutional_Decoder"
 
 generator = Model(inputs=[inp1, inp2], outputs=output)
 rms = tf.keras.optimizers.Adam(lr=0.001)
@@ -139,9 +124,7 @@ generator.compile(optimizer=rms, loss='mse')
 
 generator.summary()
 
-
-lr_scheduler = tf.keras.callbacks.LearningRateScheduler(lr_schedule)
-
+lr_scheduler = tf.keras.callbacks.LearningRateScheduler(utils.lr_schedule)
 
 generator.fit([train_x, np.zeros((train_x.shape[0], 1, 1024))], train_y,
               epochs=50,
