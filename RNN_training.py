@@ -34,9 +34,11 @@ def lr_schedule(epoch):
 dataset_x = []
 dataset_y = []
 
-data_x, data_y = utils.Preprocessor('data')
-dataset_x.extend(data_x)
-dataset_y.extend(data_y)
+paths=['data/train/icab1/front_camera','data/train/icab1/back_camera','data/train/icab1/side_camera','data/train/icab2']
+for path0 in paths:
+    data_x,data_y = utils.Preprocessor(path0,slen=3,cap = "/",flip=False)   
+    dataset_x.extend(data_x)
+    dataset_y.extend(data_y)
 
 dataset_x = np.array(dataset_x)
 dataset_y = np.array(dataset_y)
