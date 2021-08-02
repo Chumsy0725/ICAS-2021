@@ -28,7 +28,7 @@ def main():
     ax1.imshow(actual[:, :, 0], cmap="gray")
     ax2.imshow(predicted_image[:, :, 0], cmap="gray")
     danger = (predicted_image - actual)
-    ax3.imshow(danger[:, :, 0])
+    ax3.imshow(danger[:, :, 0], cmap="gray")
     plt.show()
 
 

@@ -20,10 +20,7 @@ def lr_schedule(epoch, lr):
     Returns a custom learning rate that decreases as epochs progress.
     """
 
-    if epoch > 40:
-        lr *= 0.5
-
-    elif epoch > 30:
+    if epoch > 80:
         lr = 0.0001
 
     return lr
