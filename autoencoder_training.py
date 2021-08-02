@@ -9,9 +9,9 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 def main():
     # feel free to remove this when training
-    # physical_devices = tf.config.experimental.list_physical_devices('GPU')
-    # if len(physical_devices) > 0:
-    #     tf.config.experimental.set_memory_growth(physical_devices[0], True)
+    physical_devices = tf.config.experimental.list_physical_devices('GPU')
+    if len(physical_devices) > 0:
+        tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
     encoder = models.Encoder_Gene()
     rms = tf.keras.optimizers.Adam(lr=0.001)
