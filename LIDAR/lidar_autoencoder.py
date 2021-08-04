@@ -21,7 +21,7 @@ def generate_data(m):
 # use the function above to generate data points
 X_train = generate_data(100)
 X_train = X_train - X_train.mean(axis=0, keepdims=0)
-
+print(X_train.shape)
 # preview the data
 ax = plt.axes(projection='3d')
 ax.scatter3D(X_train[:, 0], X_train[:, 1], X_train[:, 2], cmap='Reds')
@@ -63,3 +63,7 @@ print(f'decoded point: {decodings[0]}')
 ax = plt.axes(projection='3d')
 ax.scatter3D(decodings[:, 0], decodings[:, 1], decodings[:, 2], c=decodings[:, 0], cmap='Reds')
 plt.show()
+
+#loss
+SSD = np.sum((X_train[:,:]-decodings[:,:])**2)
+print('SSD value:',SSD/(X_train.shape[0]*X_train.shape[1]))
