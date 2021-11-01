@@ -9,7 +9,6 @@ import os
 import argparse
 from tensorflow.keras import backend as K
 
-
 image_data_format = "channels_last"
 K.set_image_data_format(image_data_format)
 
