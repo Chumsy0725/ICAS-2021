@@ -53,6 +53,7 @@ The data was in rodbag file. [ROS](https://www.ros.org/)(Robot Operating System)
   * Split as Train & Test data, Scale to between 0 and 1
   * Build a LSTM Forcaster model and Check for the accuracies after fitting the model
   * Results...
+      * `Training Loss ~ 0.15%`  `Validation Loss ~ 1.25%`  `Training Accuracy ~ 81.24%`  `Validation Accuracy ~ 43.45%` 
 
 
 <img src="https://github.com/Chumsy0725/ICAS-2021/blob/main/IMU/Model%20Training/validation_accuracy.png" alt="Accuracies and Losses" style="width:1000px;"/>
