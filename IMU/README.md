@@ -59,3 +59,7 @@ The data was in rodbag file. [ROS](https://www.ros.org/)(Robot Operating System)
 <img src="https://github.com/Chumsy0725/ICAS-2021/blob/main/IMU/Model%20Training/validation_accuracy.png" alt="Accuracies and Losses" style="width:1000px;"/>
 
 
+  * Capturing the Abnormalities...
+
+
+  <img src="https://github.com/Chumsy0725/ICAS-2021/blob/main/IMU/Model%20Training/abnormal_error.png" alt="Checking Abnormalities" style="width:1000px;"/>
